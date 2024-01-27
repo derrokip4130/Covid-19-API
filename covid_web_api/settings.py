@@ -1,6 +1,7 @@
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+import dj_database_url
 
 load_dotenv()
 
@@ -67,6 +68,7 @@ WSGI_APPLICATION = 'covid_web_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -76,6 +78,10 @@ DATABASES = {
         'HOST': os.getenv("host"),
         'PORT': os.getenv("port"),
     }
+}
+"""
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 # REST Framework Configurations
