@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db import models
 from django.shortcuts import render
+from datetime import datetime,date
 
 def home_page(request):
     title = "COVID 19- Info"
@@ -37,6 +38,15 @@ class CaseViewSet(viewsets.ModelViewSet):
         state = self.request.query_params.get('state', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
+
+        min_date = datetime.strptime('2020-03-10', '%Y-%m-%d').date()
+        max_date = datetime.strptime('2023-04-29', '%Y-%m-%d').date()
+
+        if start_date:
+            start_date = max(min_date, min(max_date, datetime.strptime(start_date, '%Y-%m-%d').date()))
+
+        if end_date:
+            end_date = max(min_date, min(max_date, datetime.strptime(end_date, '%Y-%m-%d').date()))
 
         filters = {'state': state}
         if start_date and end_date:
