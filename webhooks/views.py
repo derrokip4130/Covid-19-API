@@ -98,6 +98,7 @@ class CaseViewSet(viewsets.ModelViewSet):
         )
 
         summary_data = {
+            'state': state,
             'max_death': max_death_data['max_death'],
             'date_of_max_death': max_death_data['date_of_max_death'],
             'max_cured': max_cured_data['max_cured'],
@@ -143,10 +144,12 @@ class CaseViewSet(viewsets.ModelViewSet):
 
         # Predict values for the input date using the logistic function
         predictions = {}
+        predictions["state"] = state
         for variable in variables:
             parameters = models[variable]['parameters']
             predicted_value = logistic_function(numerical_input_date, *parameters)
             predictions[variable] = int(predicted_value)
+
 
         return Response(predictions)
     
