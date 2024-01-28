@@ -8,5 +8,6 @@ router.register(r'cases', CaseViewSet, basename='cases')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('predict_cases/<str:date>/<str:state>', CaseViewSet.as_view({'get': 'predict_cases'}), name='predict_cases'),
     path('home',view=views.home_page,name="home"),
 ]

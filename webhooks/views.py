@@ -1,17 +1,22 @@
-from django.urls import path, include
+import numpy as np
 from webhooks.models import Case
-from rest_framework import serializers, viewsets
 from django.db.models import Sum,Avg,Min,Max,F
-from rest_framework.response import Response
-from rest_framework.decorators import action
 from django.db import models
 from django.shortcuts import render
-from datetime import datetime,date
 from django.utils import timezone
+from rest_framework import serializers, viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from datetime import datetime,date
+from sklearn.linear_model import LinearRegression
+from scipy.optimize import curve_fit
 
 def home_page(request):
     title = "COVID 19- Info"
     return render(request,'index.html', {'title':title})
+
+def logistic_function(x, a, b, c):
+    return a / (1 + np.exp(-b * (x - c)))
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -105,5 +110,44 @@ class CaseViewSet(viewsets.ModelViewSet):
         }
 
         return Response(summary_data)
+    
+    def predict_cases(self, request, state, date):
+        # Retrieve the dataset for the specified state
+        dataset = Case.objects.filter(state=state).values_list('date', 'tcin', 'death', 'cured').order_by('date')
+
+        # Extract dates and variable values
+        dates, tcin_values, death_values, cured_values = zip(*dataset)
+
+        # Convert dates to numerical values (e.g., days since the start date)
+        start_date = min(dates)
+        numerical_dates = [(date - start_date).days for date in dates]
+
+        # Convert input date to numerical value
+        input_date = timezone.datetime.strptime(date, '%Y-%m-%d').date()
+        numerical_input_date = (input_date - start_date).days
+
+        # Reshape data for training
+        X_train = np.array(numerical_dates).reshape(-1, 1)
+
+        # Train logistic regression models for each variable
+        models = {}
+        variables = ['tcin', 'death', 'cured']
+
+        for variable in variables:
+            y_train = np.array(locals()[f'{variable}_values'])
+
+            # Use curve_fit to fit a logistic function to the data
+            popt, _ = curve_fit(logistic_function, X_train.flatten(), y_train)
+
+            models[variable] = {'parameters': popt}
+
+        # Predict values for the input date using the logistic function
+        predictions = {}
+        for variable in variables:
+            parameters = models[variable]['parameters']
+            predicted_value = logistic_function(numerical_input_date, *parameters)
+            predictions[variable] = int(predicted_value)
+
+        return Response(predictions)
     
     serializer_class = ClientSerializer
