@@ -149,8 +149,13 @@ class CaseViewSet(viewsets.ModelViewSet):
             parameters = models[variable]['parameters']
             predicted_value = logistic_function(numerical_input_date, *parameters)
             predictions[variable] = int(predicted_value)
-
-
-        return Response(predictions)
+            
+        if datetime.strptime(date, "%Y-%m-%d").date() > datetime.strptime('2023-04-29', '%Y-%m-%d').date():
+            return Response(predictions)
+        else:
+            predictions["tcin"] = "Invalid date"
+            predictions["death"] = "Invalid date"
+            predictions["cured"] = "Invalid date"
+            return Response(predictions)
     
     serializer_class = ClientSerializer
