@@ -135,6 +135,9 @@ class CaseViewSet(viewsets.ModelViewSet):
         start_date = min(dates)
         numerical_dates = [(date - start_date).days for date in dates]
 
+        if datetime.strptime(date, "%Y-%m-%d").date() < datetime.strptime('2023-04-29', '%Y-%m-%d').date():
+            date = '2023-04-29'
+
         # Convert input date to numerical value
         input_date = timezone.datetime.strptime(date, '%Y-%m-%d').date()
         numerical_input_date = (input_date - start_date).days
@@ -164,12 +167,6 @@ class CaseViewSet(viewsets.ModelViewSet):
             predicted_value = models[variable].predict(numerical_input_date_array)[0]
             predictions[variable] = int(predicted_value)
 
-        if datetime.strptime(date, "%Y-%m-%d").date() < datetime.strptime('2023-04-29', '%Y-%m-%d').date():
-            return Response(predictions)
-        else:
-            predictions["tcin"] = "Invalid date"
-            predictions["death"] = "Invalid date"
-            predictions["cured"] = "Invalid date"
-            return Response(predictions)
+        return Response(predictions)
     
     serializer_class = ClientSerializer
