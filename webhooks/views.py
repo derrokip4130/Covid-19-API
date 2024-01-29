@@ -164,7 +164,7 @@ class CaseViewSet(viewsets.ModelViewSet):
             predicted_value = models[variable].predict(numerical_input_date_array)[0]
             predictions[variable] = int(predicted_value)
 
-        if datetime.strptime(date, "%Y-%m-%d").date() > datetime.strptime('2023-04-29', '%Y-%m-%d').date():
+        if datetime.strptime(date, "%Y-%m-%d").date() < datetime.strptime('2023-04-29', '%Y-%m-%d').date():
             return Response(predictions)
         else:
             predictions["tcin"] = "Invalid date"
