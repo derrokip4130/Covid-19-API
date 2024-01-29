@@ -77,48 +77,51 @@ class CaseViewSet(viewsets.ModelViewSet):
         if start_date and end_date:
             filters['date__range'] = (start_date, end_date)
 
-        max_death_data = Case.objects.filter(**filters).aggregate(
+        death_data = Case.objects.filter(**filters).aggregate(
+            min_death=Min('death'),
             max_death=Max('death'),
+            sum_death=Sum('death'),
+            avg_death=Avg('death'),
+            date_of_min_death=Min(F('date'), output_field=models.DateField()),
             date_of_max_death=Max(F('date'), output_field=models.DateField())
         )
-
-        min_death_data = Case.objects.filter(**filters).aggregate(
-            min_death=Min('death'),
-            avg_death=Avg('death'),
-            date_of_min_death=Min(F('date'), output_field=models.DateField())
-        )
-
-        max_cured_data = Case.objects.filter(**filters).aggregate(
+        cured_data = Case.objects.filter(**filters).aggregate(
+            min_cured=Min('cured'),
             max_cured=Max('cured'),
+            sum_cured=Sum('cured'),
+            avg_cured=Avg('cured'),
+            date_of_min_cured=Min(F('date'), output_field=models.DateField()),
+            date_of_max_cured=Max(F('date'), output_field=models.DateField())
+        )
+        tcin_data = Case.objects.filter(**filters).aggregate(
+            min_tcin=Min('tcin'),
+            max_tcin=Max('tcin'),
+            sum_tcin=Sum('tcin'),
+            avg_tcin=(Avg('tcin')),
+            date_of_min_cured=Min(F('date'), output_field=models.DateField()),
             date_of_max_cured=Max(F('date'), output_field=models.DateField())
         )
 
-        min_cured_data = Case.objects.filter(**filters).aggregate(
-            min_cured=Min('cured'),
-            avg_cured=Avg('cured'),
-            date_of_min_cured=Min(F('date'), output_field=models.DateField())
-        )
+        death_increase = death_data['max_death'] - death_data['min_death']
+        cured_increase = cured_data['max_cured'] - cured_data['min_cured']
+        tcin_increase = tcin_data['max_tcin'] - tcin_data['min_tcin']
 
-        death_increase = max_death_data['max_death'] - min_death_data['min_death']
-        cured_increase = max_cured_data['max_cured'] - min_cured_data['min_cured']
+        death_rate_increase = (death_increase / death_data['min_death']) * 100 if death_data['min_death'] else None
+        cured_rate_increase = (cured_increase / cured_data['min_cured']) * 100 if cured_data['min_cured'] else None
+        tcin_rate_increase = (tcin_increase / tcin_data['min_tcin']) * 100 if tcin_data['min_tcin'] else None
 
-        death_rate_increase = (death_increase / min_death_data['min_death']) * 100 if min_death_data['min_death'] else None
-        cured_rate_increase = (cured_increase / min_cured_data['min_cured']) * 100 if min_cured_data['min_cured'] else None
+        cured_data['cured_rate'] = cured_rate_increase
+        death_data['death_rate'] = death_rate_increase
+        tcin_data['tcin_rate'] = tcin_rate_increase
+
+        cured_data['avg_cured'] = int(cured_data['avg_cured'])
+        death_data['avg_death'] = int(death_data['avg_death'])
+        tcin_data['avg_tcin'] = int(tcin_data['avg_tcin'])
 
         summary_data = {
-            'state': state,
-            'max_death': max_death_data['max_death'],
-            'date_of_max_death': max_death_data['date_of_max_death'],
-            'min_death': min_death_data['min_death'],
-            'date_of_min_death': min_death_data['date_of_min_death'],
-            'avg_death': min_death_data['avg_death'],
-            'death_rate': death_rate_increase,
-            'max_cured': max_cured_data['max_cured'],
-            'date_of_max_cured': max_cured_data['date_of_max_cured'],
-            'min_cured': min_cured_data['min_cured'],
-            'date_of_min_cured': min_cured_data['date_of_min_cured'],
-            'avg_cured': min_cured_data['avg_cured'],
-            'death_rate': cured_rate_increase,
+            'cured': cured_data,
+            'death': death_data,
+            'tcin': tcin_data,
             # Add more as needed
         }
 
