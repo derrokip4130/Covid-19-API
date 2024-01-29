@@ -90,16 +90,16 @@ class CaseViewSet(viewsets.ModelViewSet):
             max_cured=Max('cured'),
             sum_cured=Sum('cured'),
             avg_cured=Avg('cured'),
-            date_of_min_tcin=Min(F('date'), output_field=models.DateField()),
-            date_of_max_tcin=Max(F('date'), output_field=models.DateField())
+            date_of_min_cured=Min(F('date'), output_field=models.DateField()),
+            date_of_max_cured=Max(F('date'), output_field=models.DateField())
         )
         tcin_data = Case.objects.filter(**filters).aggregate(
             min_tcin=Min('tcin'),
             max_tcin=Max('tcin'),
             sum_tcin=Sum('tcin'),
             avg_tcin=(Avg('tcin')),
-            date_of_min_cured=Min(F('date'), output_field=models.DateField()),
-            date_of_max_cured=Max(F('date'), output_field=models.DateField())
+            date_of_min_tcin=Min(F('date'), output_field=models.DateField()),
+            date_of_max_tcin=Max(F('date'), output_field=models.DateField())
         )
 
         death_increase = death_data['max_death'] - death_data['min_death']
