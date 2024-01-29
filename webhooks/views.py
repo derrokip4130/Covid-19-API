@@ -84,6 +84,7 @@ class CaseViewSet(viewsets.ModelViewSet):
 
         min_death_data = Case.objects.filter(**filters).aggregate(
             min_death=Min('death'),
+            avg_death=Avg('death'),
             date_of_min_death=Min(F('date'), output_field=models.DateField())
         )
 
@@ -94,19 +95,30 @@ class CaseViewSet(viewsets.ModelViewSet):
 
         min_cured_data = Case.objects.filter(**filters).aggregate(
             min_cured=Min('cured'),
+            avg_cured=Avg('cured'),
             date_of_min_cured=Min(F('date'), output_field=models.DateField())
         )
+
+        death_increase = max_death_data['max_death'] - min_death_data['min_death']
+        cured_increase = max_cured_data['max_cured'] - min_cured_data['min_cured']
+
+        death_rate_increase = (death_increase / min_death_data['min_death']) * 100 if min_death_data['min_death'] else None
+        cured_rate_increase = (cured_increase / min_cured_data['min_cured']) * 100 if min_cured_data['min_cured'] else None
 
         summary_data = {
             'state': state,
             'max_death': max_death_data['max_death'],
             'date_of_max_death': max_death_data['date_of_max_death'],
-            'max_cured': max_cured_data['max_cured'],
-            'date_of_max_cured': max_cured_data['date_of_max_cured'],
             'min_death': min_death_data['min_death'],
             'date_of_min_death': min_death_data['date_of_min_death'],
+            'avg_death': min_death_data['avg_death'],
+            'death_rate': death_rate_increase,
+            'max_cured': max_cured_data['max_cured'],
+            'date_of_max_cured': max_cured_data['date_of_max_cured'],
             'min_cured': min_cured_data['min_cured'],
             'date_of_min_cured': min_cured_data['date_of_min_cured'],
+            'avg_cured': min_cured_data['avg_cured'],
+            'death_rate': cured_rate_increase,
             # Add more as needed
         }
 
@@ -130,26 +142,28 @@ class CaseViewSet(viewsets.ModelViewSet):
         # Reshape data for training
         X_train = np.array(numerical_dates).reshape(-1, 1)
 
-        # Train logistic regression models for each variable
+        # Train linear regression models for each variable
         models = {}
         variables = ['tcin', 'death', 'cured']
 
         for variable in variables:
             y_train = np.array(locals()[f'{variable}_values'])
 
-            # Use curve_fit to fit a logistic function to the data
-            popt, _ = curve_fit(logistic_function, X_train.flatten(), y_train)
+            # Apply decay factor to simulate the expected drop in values
+            decay_factor = 0.1  # Adjust this value based on the expected rate of decline
+            y_train = y_train * decay_factor
 
-            models[variable] = {'parameters': popt}
+            model = LinearRegression()
+            model.fit(X_train, y_train)
+            models[variable] = model
 
-        # Predict values for the input date using the logistic function
+        # Predict values for the input date
         predictions = {}
-        predictions["state"] = state
         for variable in variables:
-            parameters = models[variable]['parameters']
-            predicted_value = logistic_function(numerical_input_date, *parameters)
+            numerical_input_date_array = np.array([[numerical_input_date]])
+            predicted_value = models[variable].predict(numerical_input_date_array)[0]
             predictions[variable] = int(predicted_value)
-            
+
         if datetime.strptime(date, "%Y-%m-%d").date() > datetime.strptime('2023-04-29', '%Y-%m-%d').date():
             return Response(predictions)
         else:
