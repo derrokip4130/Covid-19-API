@@ -90,8 +90,8 @@ class CaseViewSet(viewsets.ModelViewSet):
             max_cured=Max('cured'),
             sum_cured=Sum('cured'),
             avg_cured=Avg('cured'),
-            date_of_min_cured=Min(F('date'), output_field=models.DateField()),
-            date_of_max_cured=Max(F('date'), output_field=models.DateField())
+            date_of_min_tcin=Min(F('date'), output_field=models.DateField()),
+            date_of_max_tcin=Max(F('date'), output_field=models.DateField())
         )
         tcin_data = Case.objects.filter(**filters).aggregate(
             min_tcin=Min('tcin'),
