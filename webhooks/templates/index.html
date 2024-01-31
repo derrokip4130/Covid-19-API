@@ -78,6 +78,24 @@
             border-radius: 10px;
             background-color: #f0f0f0;
         }
+
+        #casesInfo {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .case-stat {
+            text-align: center;
+        }
+
+        .case-stat h3 {
+            color: #dc3545;
+        }
     </style>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
@@ -92,11 +110,25 @@
     </header>
     
     <main>
-        <div id="casesCounter">Total Cases: <span id="totalCases">0</span></div>
-        <button id="fetchDataBtn">Fetch Live Data</button>
-        <p>This is a simple COVID-19 information page. Click the button to simulate fetching live data.</p>
+        <div id="casesInfo">
+            <div class="case-stat">
+                <h3>Total Cases</h3>
+                <p id="totalCasesStat">{{total_cases}}</p>
+            </div>
+            <div class="case-stat">
+                <h3>Total Deaths</h3>
+                <p id="totalDeathsStat">{{total_deaths}}</p>
+            </div>
+            <div class="case-stat">
+                <h3>Total Cured</h3>
+                <p id="totalCuredStat">{{total_cured}}</p>
+            </div>
+            <div class="case-stat">
+                <h3>State with Highest Cases</h3>
+                <p id="highestCasesStat">{{state_with_highest_cases.state}}</p>
+            </div>
+        </div>
 
-        <!-- COVID Information Section -->
         <div class="covid-info">
             <div class="info-section">
                 <h2>What is COVID-19?</h2>
@@ -122,12 +154,21 @@
             <h2>What the Chatbot Does</h2>
             <p>The chatbot can provide COVID-19 data for different states and offer basic information about the virus. Feel free to ask questions!</p>
         </div>
+
     </main>
     <script>
         document.getElementById('fetchDataBtn').addEventListener('click', function() {
             // Simulate fetching live data
             const totalCases = Math.floor(Math.random() * 1000000);
+            const highestCasesState = "Example State";
+            const totalDeaths = Math.floor(Math.random() * 50000);
+            const totalCured = Math.floor(Math.random() * 500000);
+
             document.getElementById('totalCases').innerText = totalCases;
+            document.getElementById('totalCasesStat').innerText = totalCases;
+            document.getElementById('highestCasesStat').innerText = highestCasesState;
+            document.getElementById('totalDeathsStat').innerText = totalDeaths;
+            document.getElementById('totalCuredStat').innerText = totalCured;
         });
     </script>
     <script src="https://cdn.cai.tools.sap/webchat/webchat.js" channelId="905a8ddd-7edc-48a9-ab48-1ec9b6e33ace" token="f321088cfb50e77f827c1eb86b7c592b" id="cai-webchat"></script>
