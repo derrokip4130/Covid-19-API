@@ -19,6 +19,7 @@ def home_page(request):
     total_deaths = Case.objects.aggregate(Sum('death'))['death__sum']
     total_cured = Case.objects.aggregate(Sum('cured'))['cured__sum']
     state_with_highest_cases = Case.objects.values('state').annotate(total_cases=Sum('tcin')).order_by('-total_cases').first()
+    all_states = Case.objects.values('state').distinct()
 
     context = {
         'title': title,
@@ -26,9 +27,51 @@ def home_page(request):
         'total_deaths': total_deaths,
         'total_cured': total_cured,
         'state_with_highest_cases': state_with_highest_cases,
+        'all_states': all_states,
     }
 
     return render(request, 'index.html', context)
+
+def state_page(request, state):
+
+    all_states = Case.objects.values('state').distinct()
+
+    death_data = Case.objects.filter(state=state).aggregate(
+            min_death=Min('death'),
+            max_death=Max('death'),
+            sum_death=Sum('death'),
+            avg_death=Avg('death'),
+            date_of_min_death=Min(F('date'), output_field=models.DateField()),
+            date_of_max_death=Max(F('date'), output_field=models.DateField())
+        )
+    cured_data = Case.objects.filter(state=state).aggregate(
+            min_cured=Min('cured'),
+            max_cured=Max('cured'),
+            sum_cured=Sum('cured'),
+            avg_cured=Avg('cured'),
+            date_of_min_cured=Min(F('date'), output_field=models.DateField()),
+            date_of_max_cured=Max(F('date'), output_field=models.DateField())
+        )
+    tcin_data = Case.objects.filter(state=state).aggregate(
+            min_tcin=Min('tcin'),
+            max_tcin=Max('tcin'),
+            sum_tcin=Sum('tcin'),
+            avg_tcin=(Avg('tcin')),
+            date_of_min_tcin=Min(F('date'), output_field=models.DateField()),
+            date_of_max_tcin=Max(F('date'), output_field=models.DateField())
+        )
+    title = f'{state} COVID-19 statistics'
+    context = {
+            'state': state,
+            'title':title,
+            'all_states': all_states,
+            'cured': cured_data,
+            'death': death_data,
+            'tcin': tcin_data,
+            # Add more as needed
+        }
+
+    return render(request, 'state_page.html', context)
 
 def logistic_function(x, a, b, c):
     return a / (1 + np.exp(-b * (x - c)))
