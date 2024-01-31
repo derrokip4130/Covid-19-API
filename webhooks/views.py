@@ -13,7 +13,22 @@ from scipy.optimize import curve_fit
 
 def home_page(request):
     title = "COVID 19- Info"
-    return render(request,'index.html', {'title':title})
+
+    # Query to get the total number of cases, deaths, cured, and state with the highest total cases
+    total_cases = Case.objects.aggregate(Sum('tcin'))['tcin__sum']
+    total_deaths = Case.objects.aggregate(Sum('death'))['death__sum']
+    total_cured = Case.objects.aggregate(Sum('cured'))['cured__sum']
+    state_with_highest_cases = Case.objects.values('state').annotate(total_cases=Sum('tcin')).order_by('-total_cases').first()
+
+    context = {
+        'title': title,
+        'total_cases': total_cases,
+        'total_deaths': total_deaths,
+        'total_cured': total_cured,
+        'state_with_highest_cases': state_with_highest_cases,
+    }
+
+    return render(request, 'index.html', context)
 
 def logistic_function(x, a, b, c):
     return a / (1 + np.exp(-b * (x - c)))
