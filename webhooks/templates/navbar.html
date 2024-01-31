@@ -72,6 +72,7 @@
                     </div>
                     <div class="middle-links">
                         <select id="statistics-dropdown" style="width: 200px;">
+                            <option>Select state to view stats</option>
                             {% for state in all_states %}
                                 <option value="{% url 'state_page' state=state.state %}">{{ state.state }}</option>
                             {% endfor %}
