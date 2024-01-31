@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #007bff;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 16px; /* Increased padding for a larger navbar */
+        }
+
+        .left-links,
+        .right-links,
+        .middle-links {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            display: block;
+            color: #fff;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-links,
+            .right-links,
+            .middle-links {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="container">
+                <div class="left-links">
+                    <a href="#">Home</a>
+                </div>
+                <div class="middle-links">
+                    <a href="#">Statistics</a>
+                    <a href="#">Prevention</a>
+                </div>
+                <div class="right-links">
+                    <a href="#">FAQ</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>
