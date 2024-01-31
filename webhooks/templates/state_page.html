@@ -110,7 +110,21 @@
     </header>
     
     <main>
+        <!-- Add these sections to your state_page.html -->
+        <div class="graph-section">
+            <h2>Total Cases Over Time</h2>
+            <img src="data:image/png;base64,{{ tcin_graph }}" alt="Total Cases Graph">
+        </div>
+        <div class="graph-section">
+            <h2>Cured Cases Over Time</h2>
+            <img src="data:image/png;base64,{{ cured_graph }}" alt="Cured Graph">
+        </div>
+        <div class="graph-section">
+            <h2>Death Cases Over Time</h2>
+            <img src="data:image/png;base64,{{ death_graph }}" alt="Death Graph">
+        </div>
     </main>
+    
     <script src="https://cdn.cai.tools.sap/webchat/webchat.js" channelId="905a8ddd-7edc-48a9-ab48-1ec9b6e33ace" token="f321088cfb50e77f827c1eb86b7c592b" id="cai-webchat"></script>
 </body>
 </html>

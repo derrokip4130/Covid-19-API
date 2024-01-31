@@ -1,4 +1,8 @@
+import base64
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from io import BytesIO
 from webhooks.models import Case
 from django.db.models import Sum,Avg,Min,Max,F
 from django.db import models
@@ -70,8 +74,65 @@ def state_page(request, state):
             'tcin': tcin_data,
             # Add more as needed
         }
+    
+    def create_line_graph(dates, data, title, y_label, color):
+        plt.figure(figsize=(10, 6))
+        plt.plot(dates, data, marker='o', color=color)
+        plt.title(title)
+        plt.xlabel('Date')
+        plt.ylabel(y_label)
+        plt.grid(True)
+        plt.tight_layout()
+
+        # Save the plot to a BytesIO object
+        image_stream = BytesIO()
+        plt.savefig(image_stream, format='png')
+        plt.close()
+
+        # Encode the image as base64
+        image_base64 = base64.b64encode(image_stream.getvalue()).decode('utf-8')
+
+        return image_base64
+
+    # Fetch date and sum data for each category
+    date_sum_death = Case.objects.filter(state=state).values('date').annotate(sum_death=Sum('death'))
+    date_sum_cured = Case.objects.filter(state=state).values('date').annotate(sum_cured=Sum('cured'))
+    date_sum_tcin = Case.objects.filter(state=state).values('date').annotate(sum_tcin=Sum('tcin'))
+
+    # Convert querysets to pandas DataFrame for easier plotting
+    df_death = pd.DataFrame.from_records(date_sum_death)
+    df_cured = pd.DataFrame.from_records(date_sum_cured)
+    df_tcin = pd.DataFrame.from_records(date_sum_tcin)
+    df_death['date'] = pd.to_datetime(df_death['date'])
+    df_cured['date'] = pd.to_datetime(df_cured['date'])
+    df_tcin['date'] = pd.to_datetime(df_tcin['date'])
+
+    # Sort the DataFrame by date to ensure proper plotting
+    df_death = df_death.sort_values(by='date')
+    df_cured = df_cured.sort_values(by='date')
+    df_tcin = df_tcin.sort_values(by='date')
+
+    # Create line graphs
+    death_graph = create_line_graph(df_death['date'], df_death['sum_death'], 'Death Cases Over Time', 'Total Deaths', 'red')
+    cured_graph = create_line_graph(df_cured['date'], df_cured['sum_cured'], 'Cured Cases Over Time', 'Total Cured', 'green')
+    tcin_graph = create_line_graph(df_tcin['date'], df_tcin['sum_tcin'], 'Total Cases Over Time', 'Total Cases', 'blue')
+
+    # Add the graphs to the context
+    context['death_graph'] = death_graph
+    context['cured_graph'] = cured_graph
+    context['tcin_graph'] = tcin_graph
 
     return render(request, 'state_page.html', context)
+
+def faq_page(request):
+    title = "Frequently Asked Questions"
+    all_states = Case.objects.values('state').distinct()
+
+    context = {
+        'title': title,
+        'all_states': all_states,
+    }
+    return render(request, 'faq.html', context)
 
 def logistic_function(x, a, b, c):
     return a / (1 + np.exp(-b * (x - c)))

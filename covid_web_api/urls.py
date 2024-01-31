@@ -11,4 +11,5 @@ urlpatterns = [
     path('predict_cases/<str:date>/<str:state>', CaseViewSet.as_view({'get': 'predict_cases'}), name='predict_cases'),
     path('home',view=views.home_page,name="home"),
     path('state/<str:state>/', views.state_page, name='state_page'),
+    path('faq/',views.faq_page,name='faq_page')
 ]
