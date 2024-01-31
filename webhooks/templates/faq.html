@@ -1,1 +1,106 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #007bff;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 16px; /* Increased padding for a larger navbar */
+        }
+
+        .left-links,
+        .right-links,
+        .middle-links {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            display: block;
+            color: #fff;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .faq-section {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .faq-question {
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <main>
+        <div class="faq-section">
+            <h2>Frequently Asked Questions (FAQ)</h2>
+
+            <div class="faq-question">
+                <h3>Q1: What is COVID-19?</h3>
+                <p>A1: COVID-19 is a respiratory illness caused by the coronavirus SARS-CoV-2.</p>
+            </div>
+
+            <div class="faq-question">
+                <h3>Q2: What are the symptoms of COVID-19?</h3>
+                <p>A2: Common symptoms include fever, cough, and shortness of breath.</p>
+            </div>
+            <div class="faq-question">
+                <h3>Q3: How is COVID-19 transmitted?</h3>
+                <p>A3: COVID-19 is primarily spread through respiratory droplets when an infected person coughs or sneezes.</p>
+            </div>
+
+            <div class="faq-question">
+                <h3>Q4: Is there a vaccine for COVID-19?</h3>
+                <p>A4: Yes, several vaccines have been developed and authorized for use against COVID-19.</p>
+            </div>
+
+            <div class="faq-question">
+                <h3>Q5: Can you get COVID-19 from touching surfaces?</h3>
+                <p>A5: It's possible but less common. The primary mode of transmission is through respiratory droplets.</p>
+            </div>
+            <div class="faq-question">
+                <h3>Q15: Can I travel during the pandemic?</h3>
+                <p>A15: It's recommended to follow travel guidelines provided by health authorities.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
