@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+    <title>{{title}}</title>
+    {% else %}
+    <title>COVID-19 Information</title>
+    {% endif %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        #header1 {
+            background-color: black;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #casesCounter {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #fetchDataBtn {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #fetchDataBtn:hover {
+            background-color: #218838;
+        }
+
+        .covid-info {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        #chatbotResponses {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        #chatbotInfo {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+        }
+
+        #casesInfo {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .case-stat {
+            text-align: center;
+        }
+
+        .case-stat h3 {
+            color: #dc3545;
+        }
+    </style>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css" rel="stylesheet">
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <header id="header1">
+        <h1>{{state}} COVID-19 Stats Page</h1>
+    </header>
+    
+    <main>
+    </main>
+    <script src="https://cdn.cai.tools.sap/webchat/webchat.js" channelId="905a8ddd-7edc-48a9-ab48-1ec9b6e33ace" token="f321088cfb50e77f827c1eb86b7c592b" id="cai-webchat"></script>
+</body>
+</html>
