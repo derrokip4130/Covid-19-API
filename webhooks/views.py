@@ -1,6 +1,8 @@
 import base64
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 from webhooks.models import Case
@@ -77,7 +79,7 @@ def state_page(request, state):
     
     def create_line_graph(dates, data, title, y_label, color):
         plt.figure(figsize=(10, 6))
-        plt.plot(dates, data, marker='o', color=color)
+        plt.plot(dates, data, marker='_', color=color)
         plt.title(title)
         plt.xlabel('Date')
         plt.ylabel(y_label)
