@@ -6,12 +6,130 @@
     {% if title %}
     <title>{{title}}</title>
     {% else %}
-    <title> COVID 19- Information </title>
+    <title>COVID-19 Information</title>
     {% endif %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        #header1 {
+            background-color: black;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #casesCounter {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #fetchDataBtn {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #fetchDataBtn:hover {
+            background-color: #218838;
+        }
+
+        .covid-info {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        #chatbotResponses {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        #chatbotInfo {
+            margin-top: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css" rel="stylesheet">
 </head>
 <body>
+    {% include 'navbar.html' %}
 
-    <!--<script src="https://cdn.cai.tools.sap/webclient/bootstrap.js" data-channel-id="6db2e813-f1d5-4ad0-9df1-419dd1607e3e" data-token="324544e42cd46f279522ae29ae261bc5" data-expander-type="CAI" data-expander-preferences="JTdCJTIyYWNjZW50Q29sb3IlMjIlM0ElMjIlMjNkOGU4ZjclMjIlMkMlMjJiYWNrZ3JvdW5kQ29sb3IlMjIlM0ElMjIlMjNmYWZhZmElMjIlMkMlMjJjb21wbGVtZW50YXJ5Q29sb3IlMjIlM0ElMjIlMjMzMjM2M2ElMjIlMkMlMjJleHBhbmRlckxvZ28lMjIlM0ElMjJodHRwcyUzQSUyRiUyRmNkbi5jYWkudG9vbHMuc2FwJTJGd2ViY2hhdCUyRndlYmNoYXQtbG9nby5zdmclMjIlMkMlMjJleHBhbmRlclRpdGxlJTIyJTNBJTIySGVsbG8lMjIlMkMlMjJvbmJvYXJkaW5nTWVzc2FnZSUyMiUzQSUyMkNoYXQlMjB3aXRoJTIwbWUhJTIyJTJDJTIydGhlbWUlMjIlM0ElMjJDVVNUT00lMjIlN0Q=" id="cai-webclient-custom"></script>!-->
-    <script src="https://cdn.cai.tools.sap/webclient/bootstrap.js" data-channel-id="6db2e813-f1d5-4ad0-9df1-419dd1607e3e" data-token="324544e42cd46f279522ae29ae261bc5" data-expander-type="CAI" data-expander-preferences="JTdCJTIyYWNjZW50Q29sb3IlMjIlM0ElMjIlMjNkOGU4ZjclMjIlMkMlMjJiYWNrZ3JvdW5kQ29sb3IlMjIlM0ElMjIlMjNmYWZhZmElMjIlMkMlMjJjb21wbGVtZW50YXJ5Q29sb3IlMjIlM0ElMjIlMjMzMjM2M2ElMjIlMkMlMjJleHBhbmRlckxvZ28lMjIlM0ElMjJodHRwcyUzQSUyRiUyRmNkbi5jYWkudG9vbHMuc2FwJTJGd2ViY2hhdCUyRndlYmNoYXQtbG9nby5zdmclMjIlMkMlMjJleHBhbmRlclRpdGxlJTIyJTNBJTIySGVsbG8lMjIlMkMlMjJvbmJvYXJkaW5nTWVzc2FnZSUyMiUzQSUyMkNoYXQlMjB3aXRoJTIwbWUhJTIyJTJDJTIydGhlbWUlMjIlM0ElMjJDVVNUT00lMjIlN0Q=" id="cai-webclient-custom"></script>
+    <header id="header1">
+        <h1>COVID-19 Information Page</h1>
+    </header>
+    
+    <main>
+        <div id="casesCounter">Total Cases: <span id="totalCases">0</span></div>
+        <button id="fetchDataBtn">Fetch Live Data</button>
+        <p>This is a simple COVID-19 information page. Click the button to simulate fetching live data.</p>
+
+        <!-- COVID Information Section -->
+        <div class="covid-info">
+            <div class="info-section">
+                <h2>What is COVID-19?</h2>
+                <p>COVID-19 is a respiratory illness caused by the coronavirus SARS-CoV-2.</p>
+            </div>
+            <div class="info-section">
+                <h2>Signs and Symptoms</h2>
+                <p>Common symptoms include fever, cough, and shortness of breath. Seek medical attention if symptoms worsen.</p>
+            </div>
+            <div class="info-section">
+                <h2>How to Avoid COVID-19</h2>
+                <ul>
+                    <li>Wash hands frequently with soap and water</li>
+                    <li>Avoid close contact with sick individuals</li>
+                    <li>Wear a mask in public settings</li>
+                    <li>Clean and disinfect frequently-touched surfaces</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Chatbot Info Section -->
+        <div id="chatbotInfo">
+            <h2>What the Chatbot Does</h2>
+            <p>The chatbot can provide COVID-19 data for different states and offer basic information about the virus. Feel free to ask questions!</p>
+        </div>
+    </main>
+    <script>
+        document.getElementById('fetchDataBtn').addEventListener('click', function() {
+            // Simulate fetching live data
+            const totalCases = Math.floor(Math.random() * 1000000);
+            document.getElementById('totalCases').innerText = totalCases;
+        });
+    </script>
+    <script src="https://cdn.cai.tools.sap/webchat/webchat.js" channelId="905a8ddd-7edc-48a9-ab48-1ec9b6e33ace" token="f321088cfb50e77f827c1eb86b7c592b" id="cai-webchat"></script>
 </body>
 </html>
