@@ -2,6 +2,8 @@ asgiref==3.7.2
 backports.zoneinfo==0.2.1
 cycler==0.11.0
 Django==3.2.23
+django-background-tasks==1.2.5
+django-compat==1.0.15
 django-database-url==1.0.3
 djangorestframework==3.14.0
 fonttools==4.38.0
